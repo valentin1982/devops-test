@@ -9,7 +9,7 @@
 ## Структура Додатку
 
 ```
-nest-redis-app/
+nestjs-app/
 ├── src/
 │   ├── redis/
 │   │   └── redis.service.ts
@@ -19,7 +19,6 @@ nest-redis-app/
 │   └── main.ts
 ├── package.json
 ├── tsconfig.json
-└── README.md
 ```
 
 ### Ендпоінт Додатку
