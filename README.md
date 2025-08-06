@@ -1,4 +1,4 @@
-# DevOps Тестове Завдання: NestJS + Redis + Kubernetes
+# DevOps Тестове Завдання: CI/CD для NestJS + Redis + Kubernetes
 
 **Час виконання:** 2 години
 
