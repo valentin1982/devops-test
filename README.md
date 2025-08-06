@@ -1,98 +1,145 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# DevOps Тестове Завдання: NestJS + Redis + Kubernetes
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+**Час виконання:** 2 години
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Опис Завдання
 
-## Description
+Вам надано простий додаток NestJS з одним ендпоінтом `/redis`, який перевіряє підключення до Redis і повертає true/false. Потрібно налаштувати повний CI/CD pipeline та розгорнути додаток у Kubernetes.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Структура Додатку
 
-## Project setup
-
-```bash
-$ npm install
+```
+nest-redis-app/
+├── src/
+│   ├── redis/
+│   │   └── redis.service.ts
+│   ├── app.controller.ts
+│   ├── app.module.ts
+│   ├── app.service.ts
+│   └── main.ts
+├── package.json
+├── tsconfig.json
+└── README.md
 ```
 
-## Compile and run the project
+### Ендпоінт Додатку
+
+- **GET /redis** - повертає `{"status": true/false}` залежно від стану підключення до Redis
+
+## Вимоги
+
+### 1. Dockerfile
+
+- [ ] Створити оптимізований багатоетапний Dockerfile
+- [ ] Використовувати офіційні базові образи
+- [ ] Мінімізувати розмір кінцевого образу
+- [ ] Налаштувати користувача без root прав
+- [ ] Правильно обробити залежності Node.js
+- [ ] Використовувати .dockerignore
+
+### 2. CI/CD Pipeline
+
+Налаштувати pipeline для GitHub Actions або GitLab CI з етапами:
+
+- [ ] Збірка Docker образу
+- [ ] Push образу в registry
+- [ ] Деплой у Kubernetes
+- [ ] Використання змінних середовища та secrets
+
+### 3. Kubernetes Маніфести
+
+- [ ] Deployment, Service, Ingress для NestJS додатку
+- [ ] Deployment, Service для Redis
+- [ ] ConfigMap, Secrets для конфігурації
+- [ ] Правильні labels та selectors
+- [ ] Resource limits та requests
+
+### 4. Інтеграція з Redis
+
+- [ ] Redis розгорнуто у кластері
+- [ ] Додаток успішно підключається до Redis
+- [ ] Ендпоінт `/redis` працює коректно
+
+### 5. Secrets та Безпека
+
+- [ ] Використання Kubernetes Secrets для чутливих даних
+- [ ] Пароль Redis зберігається в Secret
+- [ ] NetworkPolicy для обмеження трафіку (бонус)
+- [ ] SecurityContext у pod'ах
+- [ ] Не використовуються root права в контейнерах
+
+### 6. Додаткові Вимоги
+
+- [ ] Детальний README з інструкціями по налаштуванню
+- [ ] Health checks та Autoscaler
+- [ ] Коментарі в коді та маніфестах
+- [ ] Моніторинг з Prometheus/Grafana
+
+## Критерії Оцінювання
+
+| Компонент         | Відмінно                                              | Добре                           | Задовільно                 | Незадовільно            |
+| ----------------- | ----------------------------------------------------- | ------------------------------- | -------------------------- | ----------------------- |
+| **Dockerfile**    | Багатоетапний, оптимізований, security best practices | Робочий, частково оптимізований | Базовий робочий Dockerfile | Не працює або відсутній |
+| **CI/CD**         | Повний pipeline з тестами, скануванням, автодеплоєм   | Pipeline з основними етапами    | Базовий pipeline збірки    | Не працює               |
+| **K8s Маніфести** | Повні, оптимізовані, з best practices                 | Коректні основні компоненти     | Базові робочі маніфести    | Не працює               |
+| **Документація**  | Детальна, з прикладами, діаграмами                    | Гарна з основними інструкціями  | Базова документація        | Відсутня або неповна    |
+
+## Що Потрібно Надати
+
+1. **Репозиторій з кодом** (GitHub)
+2. **README.md** з детальними інструкціями
+3. **Архітектурна діаграма** (може бути проста схема)
+4. **Демонстрація роботи** - скріншоти або відео
+5. **Пояснення рішень** - чому обрали саме такий підхід
+
+## Додаткові Інструкції
+
+### Тестове Середовище
+
+- Використовуйте minikube, kind або Docker Desktop для локального тестування
+- Якщо є доступ до хмарного кластеру - можете використовувати його
+- Всі рішення повинні бути відтворюваними
+
+### Registry
+
+- Можете використовувати Docker Hub, GitHub Container Registry або будь-який інший публічний registry
+- Не забудьте про теги версій
+
+### Моніторинг Розгортання
+
+Ці команди повинні працювати для перевірки:
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+kubectl get pods
+kubectl get services
+curl http://example.ltd/redis
 ```
 
-## Run tests
+## Розподіл Часу
 
-```bash
-# unit tests
-$ npm run test
+- **30 хв** - Аналіз додатку, планування архітектури
+- **45 хв** - Dockerfile та базові K8s маніфести
+- **30 хв** - CI/CD pipeline
+- **15 хв** - Тестування та відлагодження
+- **20 хв** - Документація та фіналізація
 
-# e2e tests
-$ npm run test:e2e
+## Критерії Успішного Виконання
 
-# test coverage
-$ npm run test:cov
-```
+### Мінімум для Проходження
 
-## Deployment
+- Додаток розгортається в Kubernetes
+- Ендпоінт `/redis` повертає коректну відповідь
+- Dockerfile працює та оптимізований
+- Існує базовий CI/CD pipeline
+- Документація дозволяє відтворити результат
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+### Для Високої Оцінки Додатково
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+- Реалізовані security best practices
+- Додані моніторинг та автомасштабування
+- Код та інфраструктура добре документовані
+- Продумані питання продуктивності та відмовостійкості
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
+---
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+**Удачі!** Чекаємо ваше рішення протягом 2 годин після отримання завдання.
