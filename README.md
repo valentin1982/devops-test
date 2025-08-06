@@ -111,7 +111,7 @@ nestjs-app/
 ```bash
 kubectl get pods
 kubectl get services
-curl http://example.ltd/redis
+curl http://domain.tld/redis
 ```
 
 ## Розподіл Часу
