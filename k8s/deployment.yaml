@@ -14,11 +14,11 @@ spec:
       labels:
         app: nest-api
       annotations:
-        image-tag-updated-at: "d84b47a"  # тег буде замінено через sed у CI/CD
+        image-tag-updated-at: "d4345a4"  # тег буде замінено через sed у CI/CD
     spec:
       containers:
         - name: nest-api
-          image: ghcr.io/valentin1982/devops-test:d84b47a  # образ буде замінено в CI/CD
+          image: ghcr.io/valentin1982/devops-test:d4345a4  # образ буде замінено в CI/CD
           imagePullPolicy: Always  # завжди витягувати останню версію
           ports:
             - containerPort: 3000  # порт, на якому працює застосунок
