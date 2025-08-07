@@ -71,11 +71,11 @@ jobs:
         run: |
           sudo snap install yq
 
-      # Оновлення image tag та анотації в Kubernetes deployment
-      - name: Update image tag and annotation in deployment.yaml
+      # Створення deployment.yaml з шаблону
+      - name: Generate deployment.yaml from template
         run: |
-          sed -i "s|image: $IMAGE_NAME:.*|image: $IMAGE_NAME:${{ steps.vars.outputs.sha_tag }}|" ./k8s/deployment.yaml
-          yq e -i '.spec.template.metadata.annotations."image-tag-updated-at" = "${{ steps.vars.outputs.sha_tag }}"' ./k8s/deployment.yaml
+          cp ./k8s/deployment.template.yaml ./k8s/deployment.yaml
+          sed -i "s|\${IMAGE_TAG}|${{ steps.vars.outputs.sha_tag }}|g" ./k8s/deployment.yaml
 
       # Коміт і пуш зміненого deployment.yaml (для ArgoCD sync)
       - name: Commit and push updated deployment.yaml
