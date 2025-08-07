@@ -74,7 +74,7 @@ jobs:
       # Створення deployment.yaml з шаблону
       - name: Generate deployment.yaml from template
         run: |
-          cp ./k8s/deployment.template.yaml ./k8s/deployment.yaml
+          cp ./k8s-template/deployment.template.yaml ./k8s/deployment.yaml
           sed -i "s|\${IMAGE_TAG}|${{ steps.vars.outputs.sha_tag }}|g" ./k8s/deployment.yaml
 
       # Коміт і пуш зміненого deployment.yaml (для ArgoCD sync)
