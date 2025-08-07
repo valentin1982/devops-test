@@ -30,17 +30,24 @@ jobs:
         id: vars
         run: echo "sha_tag=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
 
-      - name: Build & Push Docker image
+      - name: Build & Push Docker image with cache
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
           tags: ${{ env.IMAGE_NAME }}:${{ steps.vars.outputs.sha_tag }}
           platforms: linux/amd64,linux/arm64
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
-      - name: Update image tag in deployment.yaml
+      - name: Install yq
+        run: |
+          sudo snap install yq
+
+      - name: Update image tag and annotation in deployment.yaml
         run: |
           sed -i "s|image: $IMAGE_NAME:.*|image: $IMAGE_NAME:${{ steps.vars.outputs.sha_tag }}|" ./k8s/deployment.yaml
+          yq e -i '.spec.template.metadata.annotations."image-tag-updated-at" = "${{ steps.vars.outputs.sha_tag }}"' ./k8s/deployment.yaml
 
       - name: Commit and push updated deployment.yaml
         run: |

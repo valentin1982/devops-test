@@ -13,10 +13,12 @@ spec:
     metadata:
       labels:
         app: nest-api
+      annotations:
+        image-tag-updated-at: "${IMAGE_TAG}"  # буде замінено через sed або yq у CI
     spec:
       containers:
         - name: nest-api
-          image: ghcr.io/valentin1982/devops-test:latest
+          image: ghcr.io/valentin1982/devops-test:${IMAGE_TAG}  # буде замінено через sed у CI
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
