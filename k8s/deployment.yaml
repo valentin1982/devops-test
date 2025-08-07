@@ -5,7 +5,7 @@ metadata:
   labels:
     app: nest-api
 spec:
-  replicas: 1
+  replicas: 1  # Кількість реплік — можна збільшити вручну або через HPA
   selector:
     matchLabels:
       app: nest-api
@@ -14,34 +14,41 @@ spec:
       labels:
         app: nest-api
       annotations:
-        image-tag-updated-at: "6200d42" # буде замінено через sed або yq у CI
+        image-tag-updated-at: "087f43d"  # тег буде замінено через sed у CI/CD
     spec:
       containers:
         - name: nest-api
-          image: ghcr.io/valentin1982/devops-test:6200d42 # буде замінено через sed або yq у CI
-          imagePullPolicy: Always
+          image: ghcr.io/valentin1982/devops-test:087f43d  # образ буде замінено в CI/CD
+          imagePullPolicy: Always  # завжди витягувати останню версію
           ports:
-            - containerPort: 3000
+            - containerPort: 3000  # порт, на якому працює застосунок
           envFrom:
             - configMapRef:
-                name: api-config
+                name: api-config     # загальні змінні конфігурації
             - secretRef:
-                name: api-secrets
+                name: api-secrets    # секрети для застосунку
             - secretRef:
-                name: redis-secret
+                name: redis-secret   # доступ до Redis (наприклад, URL або пароль)
           securityContext:
-            runAsNonRoot: true
-            runAsUser: 1000
-            allowPrivilegeEscalation: false
+            runAsNonRoot: true  # працювати не під root'ом — це безпечніше
+            runAsUser: 1000     # UID користувача всередині контейнера
+            allowPrivilegeEscalation: false  # не дозволяє підвищення привілеїв
+          resources:
+            requests:
+              cpu: "100m"       # мінімально гарантований CPU
+              memory: "128Mi"   # мінімально гарантована памʼять
+            limits:
+              cpu: "500m"       # максимальний CPU
+              memory: "256Mi"   # максимальна памʼять
           livenessProbe:
             httpGet:
               path: /redis
               port: 3000
-            initialDelaySeconds: 5
-            periodSeconds: 10
+            initialDelaySeconds: 5  # коли починати перевірку після запуску
+            periodSeconds: 10       # як часто перевіряти живість
           readinessProbe:
             httpGet:
               path: /redis
               port: 3000
-            initialDelaySeconds: 5
-            periodSeconds: 10
+            initialDelaySeconds: 5  # коли починати перевірку після запуску
+            periodSeconds: 10       # як часто перевіряти готовність
