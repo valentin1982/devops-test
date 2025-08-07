@@ -58,6 +58,11 @@ jobs:
         id: vars
         run: echo "sha_tag=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
 
+      # Отримання часу перезапуску для аннотації
+      - name: Get restart timestamp
+        id: restart
+        run: echo "RESTART_AT=$(date +%s)" >> "$GITHUB_OUTPUT"
+
       # Побудова і пуш Docker-образу з кешуванням
       - name: Build & Push Docker image with cache
         uses: docker/build-push-action@v5
@@ -79,6 +84,7 @@ jobs:
         run: |
           cp ./k8s-template/deployment.template.yaml ./k8s/deployment.yaml
           sed -i "s|\${IMAGE_TAG}|${{ steps.vars.outputs.sha_tag }}|g" ./k8s/deployment.yaml
+          sed -i "s|\${RESTART_AT}|${{ steps.restart.outputs.RESTART_AT }}|g" ./k8s/deployment.yaml  
 
       # Коміт і пуш зміненого deployment.yaml (для ArgoCD sync)
       - name: Commit and push updated deployment.yaml

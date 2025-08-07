@@ -15,6 +15,7 @@ spec:
         app: nest-api
       annotations:
         image-tag-updated-at: "${IMAGE_TAG}"  # тег буде замінено через sed у CI/CD
+        kubectl.kubernetes.io/restartedAt: "${RESTART_AT}"
     spec:
       containers:
         - name: nest-api
