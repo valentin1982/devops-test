@@ -3,43 +3,46 @@ name: CI/CD with image tagging and ArgoCD sync
 on:
   push:
     branches:
-      - main
+      - main  # Запуск при пуші в гілку main
 
 env:
-  IMAGE_NAME: ghcr.io/valentin1982/devops-test
+  IMAGE_NAME: ghcr.io/valentin1982/devops-test  # Ім'я Docker-образу
 
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  # Виконання на Ubuntu runner
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4  # Клонування репозиторію
 
-      # ---⬇️ Setup for testing and scanning ---
+      # Налаштування середовища Node.js
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 20
 
+      # Встановлення залежностей
       - name: Install dependencies
         run: npm ci
 
+      # Запуск юніт-тестів
       - name: Run unit tests
         run: npm run test
 
+      # Запуск лінтера (не зупиняє процес у разі помилок)
       - name: Run linter
         run: npm run lint || true
 
-      # ---⬇️ Security scanning (optional, but desirable) ---
+      # Аудит безпеки залежностей (не зупиняє процес)
       - name: Run security audit
         run: npm audit --audit-level=moderate || true
-        # use || true so audit warnings don’t fail the pipeline
 
-      # ---⬇️ Docker build and deployment ---
+      # Налаштування Docker Buildx
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      # Аутентифікація в GitHub Container Registry
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
@@ -47,10 +50,12 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # Отримання короткого SHA коміту
       - name: Get short SHA
         id: vars
         run: echo "sha_tag=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
 
+      # Побудова і пуш Docker-образу з кешуванням
       - name: Build & Push Docker image with cache
         uses: docker/build-push-action@v5
         with:
@@ -61,15 +66,18 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      # Встановлення yq для редагування YAML
       - name: Install yq
         run: |
           sudo snap install yq
 
+      # Оновлення image tag та анотації в Kubernetes deployment
       - name: Update image tag and annotation in deployment.yaml
         run: |
           sed -i "s|image: $IMAGE_NAME:.*|image: $IMAGE_NAME:${{ steps.vars.outputs.sha_tag }}|" ./k8s/deployment.yaml
           yq e -i '.spec.template.metadata.annotations."image-tag-updated-at" = "${{ steps.vars.outputs.sha_tag }}"' ./k8s/deployment.yaml
 
+      # Коміт і пуш зміненого deployment.yaml (для ArgoCD sync)
       - name: Commit and push updated deployment.yaml
         run: |
           git config user.name "github-actions"
