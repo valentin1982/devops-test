@@ -14,11 +14,11 @@ spec:
       labels:
         app: nest-api
       annotations:
-        image-tag-updated-at: "${IMAGE_TAG}"  # буде замінено через sed або yq у CI
+        image-tag-updated-at: "082e1ee" # буде замінено через sed або yq у CI
     spec:
       containers:
         - name: nest-api
-          image: ghcr.io/valentin1982/devops-test:${IMAGE_TAG}  # буде замінено через sed у CI
+          image: ghcr.io/valentin1982/devops-test:082e1ee
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
