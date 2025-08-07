@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: nest-api
-          image: devops-test:local
+          image: ghcr.io/valentin1982/devops-test:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3000
