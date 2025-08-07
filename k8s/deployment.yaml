@@ -17,7 +17,7 @@ spec:
       containers:
         - name: nest-api
           image: ghcr.io/valentin1982/devops-test:latest
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           ports:
             - containerPort: 3000
           envFrom:
