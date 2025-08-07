@@ -14,12 +14,12 @@ spec:
       labels:
         app: nest-api
       annotations:
-        image-tag-updated-at: "2e94d17"  # тег буде замінено через sed у CI/CD
-        kubectl.kubernetes.io/restartedAt: "1754604471"
+        image-tag-updated-at: "1f47340"  # тег буде замінено через sed у CI/CD
+        kubectl.kubernetes.io/restartedAt: "1754609554"
     spec:
       containers:
         - name: nest-api
-          image: ghcr.io/valentin1982/devops-test:2e94d17  # образ буде замінено в CI/CD
+          image: ghcr.io/valentin1982/devops-test:1f47340  # образ буде замінено в CI/CD
           imagePullPolicy: Always  # завжди витягувати останню версію
           ports:
             - containerPort: 3000  # порт, на якому працює застосунок
